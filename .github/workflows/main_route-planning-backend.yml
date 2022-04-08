@@ -26,7 +26,9 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-          pip install pipenv
+      
+      -name Intstall pipenv
+        run: pip install pipenv
 
       - name: Create requirements.txt from Pipfile
         run: python -m pipenv lock -r > requirements.txt
