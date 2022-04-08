@@ -50,7 +50,7 @@ def register_user():
 @account_api.route("/account/list", methods=["GET"])
 def list_user():
 
-    cur.execute("select * user")
+    cur.execute("select * from user")
     query_result = [dict(row) for row in cur.fetchall()]
 
     if len(query_result) == 0:
