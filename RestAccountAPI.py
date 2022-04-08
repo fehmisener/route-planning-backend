@@ -1,7 +1,6 @@
-from flask import request
-from flask import Blueprint
-
 import sqlite3
+
+from flask import Blueprint, request
 
 con = sqlite3.connect("database.db", check_same_thread=False)
 con.row_factory = sqlite3.Row
@@ -46,3 +45,16 @@ def register_user():
     )
     con.commit()
     return {"msg": "Succesfully account created."}, 200
+
+
+@account_api.route("/account/list", methods=["GET"])
+def list_user():
+
+    cur.execute("select * user")
+    query_result = [dict(row) for row in cur.fetchall()]
+
+    if len(query_result) == 0:
+        return {"error": "No user in table."}, 200
+    return {
+        "user_list": query_result,
+    }, 200

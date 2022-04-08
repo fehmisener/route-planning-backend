@@ -1,7 +1,6 @@
-from flask import request
-from flask import Blueprint
-
 import sqlite3
+
+from flask import Blueprint, request
 
 con = sqlite3.connect("database.db", check_same_thread=False)
 con.row_factory = sqlite3.Row
