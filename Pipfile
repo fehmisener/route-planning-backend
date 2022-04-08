@@ -6,8 +6,11 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-cors = "*"
+black = "*"
 
 [dev-packages]
+black = "*"
+isort = "*"
 
 [requires]
 python_version = "3.8"
