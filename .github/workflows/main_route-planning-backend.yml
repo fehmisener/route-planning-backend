@@ -22,20 +22,17 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install pipenv
+      - name: Create and start virtual environment
         run: |
-          python -m pip install --upgrade pipenv wheel
-      
-      - id: cache-pipenv
-        uses: actions/cache@v1
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          python -m venv venv
+          source venv/bin/activate
+          pip install pipenv
 
+      - name: Create requirements.txt from Pipfile
+        run: python -m pipenv lock -r > requirements.txt
+        
       - name: Install dependencies
-        if: steps.cache-pipenv.outputs.cache-hit != 'true'
-        run: |
-          pipenv install --deploy --dev
+        run: pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
