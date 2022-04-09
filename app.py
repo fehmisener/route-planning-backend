@@ -12,4 +12,4 @@ app.register_blueprint(station_api)
 CORS(app)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
