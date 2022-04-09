@@ -109,7 +109,7 @@ def create_data_model(route_date):
     return data
 
 
-def print_solution(data, manager, routing, solution,route_date):
+def print_solution(data, manager, routing, solution, route_date):
     """Prints solution on console."""
     total_distance = 0
     total_load = 0
@@ -233,7 +233,8 @@ def main(route_date):
 
     # Print solution on console.
     if solution:
-        return print_solution(data, manager, routing, solution,route_date)
+        return print_solution(data, manager, routing, solution, route_date)
+
 
 if __name__ == "__main__":
     main()
