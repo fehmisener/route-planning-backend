@@ -24,7 +24,7 @@ def get_routes_for_limited_car():
     if len(query_result) == 0:
         return {"error": "No routes in table."}, 200
     return {
-        "route_list": query_result,
+        "route_list": query_result, "route_date": route_date
     }, 200
 
 
@@ -81,7 +81,7 @@ def get_route_for_user():
     query_result = [dict(row) for row in cur.fetchall()]
 
     if len(query_result) == 0:
-        return {"error": "No routes in table for this user."}, 200
+        return {"error": "No routes in table for this user.", "user_id": user_id, "route_date": route_date}, 200
     return {
         "service_route": query_result,
     }, 200
