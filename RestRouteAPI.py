@@ -30,7 +30,14 @@ def get_daily_vote_list():
     route_date = request.json["route_date"]
 
     cur.execute(
-        "select * from daily_vote where route_date=:route_date", {"route_date": route_date}
+        """
+        SELECT stations.id, stations.name, count(*) as passenger_count
+        FROM daily_vote as votes, station as stations
+        WHERE votes.user_station_id == stations.id AND votes.route_date=:route_date
+        GROUP BY votes.user_station_id
+        ORDER BY stations.id DESC
+        """,
+        {"route_date": route_date},
     )
     query_result = [dict(row) for row in cur.fetchall()]
 
@@ -38,4 +45,5 @@ def get_daily_vote_list():
         return {"error": "No daily_vote in table."}, 200
     return {
         "daily_vote_list": query_result,
+        "route_date": route_date,
     }, 200
