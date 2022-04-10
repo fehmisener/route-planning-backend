@@ -81,6 +81,7 @@ def get_route_for_user():
                     WHERE 
                     user_id=:user_id AND route_date=:route_date
                 )
+                AND route.route_date=:route_date
             )
         AND route.station_id = stations.id AND route.route_date=:route_date
         """,
