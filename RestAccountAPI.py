@@ -24,13 +24,13 @@ def check_auth():
     if len(query_result) == 0:
         return {
             "msg": "User not found or one of the account information is incorrect.",
-            "status_code":401
+            "status_code": 401,
         }, 401
     return {
         "msg": "User account verifed. Succesfully login.",
         "user_type": query_result[0]["type"],
         "user_id": query_result[0]["id"],
-        "status_code": 200
+        "status_code": 200,
     }, 200
 
 
@@ -56,7 +56,5 @@ def list_user():
     query_result = [dict(row) for row in cur.fetchall()]
 
     if len(query_result) == 0:
-        return {"error": "No user in table."}, 200
-    return {
-        "user_list": query_result,
-    }, 200
+        return ({"msg": "No user in table.", "status_code": 403},)
+    return {"user_list": query_result, "status_code": 200}, 200
