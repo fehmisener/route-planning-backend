@@ -17,12 +17,18 @@ def get_routes_for_limited_car():
     route_date = request.json["route_date"]
 
     cur.execute(
-        "select * from route where route_date=:route_date", {"route_date": route_date}
+        """
+        SELECT car_id,station_id,station_order,name,lat,lon,route_date
+        FROM route as routes, station as stations
+        WHERE routes.station_id = stations.id
+        AND route_date=:route_date
+        """,
+        {"route_date": route_date},
     )
     query_result = [dict(row) for row in cur.fetchall()]
 
     if len(query_result) == 0:
-        return {"error": "No routes in table."}, 200
+        return {"msg": "No routes in table.", "status_code": 403}, 403
     return {
         "route_list": query_result,
     }, 200
@@ -56,31 +62,32 @@ def get_route_for_user():
 
     cur.execute(
         """
-    SELECT 
-    * 
-    FROM 
-        route 
-    WHERE 
-        car_id IN (
-            SELECT 
-            DISTINCT car_id 
-            FROM 
-            route 
-            WHERE 
-            station_id IN (
+        SELECT 
+        * 
+        FROM 
+            route, station as stations 
+        WHERE 
+            car_id IN (
                 SELECT 
-                user_station_id 
+                DISTINCT car_id 
                 FROM 
-                daily_vote 
+                route 
                 WHERE 
-                user_id=:user_id and route_date=:route_date
+                station_id IN (
+                    SELECT 
+                    user_station_id 
+                    FROM 
+                    daily_vote 
+                    WHERE 
+                    user_id=:user_id AND route_date=:route_date
+                )
             )
-        )
-    """,
+        AND route.station_id = stations.id
+        """,
         {"user_id": user_id, "route_date": route_date},
     )
     query_result = [dict(row) for row in cur.fetchall()]
 
     if len(query_result) == 0:
-        return {"error": "No routes in table for this user. "}, 200
+        return {"msg": "No route for this user in table.", "status_code": 403}, 403
     return {"service_route": query_result, "user_id": user_id}, 200

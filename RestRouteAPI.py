@@ -21,7 +21,7 @@ def vote_station():
         (user_id, user_station_id, route_date),
     )
     con.commit()
-    return {"msg": "Succesfully saved.","status_code": 201}, 201
+    return {"msg": "Succesfully saved.", "status_code": 201}, 201
 
 
 @route_api.route("/route/daily-vote/", methods=["GET"])
@@ -42,7 +42,7 @@ def get_daily_vote_list():
     query_result = [dict(row) for row in cur.fetchall()]
 
     if len(query_result) == 0:
-        return {"error": "No daily_vote in table."}, 200
+        return {"msg": "No daily vote in table.", "status_code": 403}, 403
     return {
         "daily_vote_list": query_result,
         "route_date": route_date,
