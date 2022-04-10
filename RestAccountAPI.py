@@ -23,12 +23,14 @@ def check_auth():
 
     if len(query_result) == 0:
         return {
-            "error": "User not found or one of the account information is incorrect."
+            "msg": "User not found or one of the account information is incorrect.",
+            "status_code":401
         }, 401
     return {
+        "msg": "User account verifed. Succesfully login.",
         "user_type": query_result[0]["type"],
         "user_id": query_result[0]["id"],
-        "msg": "User account verifed. Succesfully login.",
+        "status_code": 200
     }, 200
 
 
@@ -44,7 +46,7 @@ def register_user():
         (user_id, user_pass, user_type),
     )
     con.commit()
-    return {"msg": "Succesfully account created."}, 200
+    return {"msg": "Succesfully account created.", "status_code": 201}, 201
 
 
 @account_api.route("/account/list", methods=["GET"])
