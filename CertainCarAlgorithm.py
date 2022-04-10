@@ -162,7 +162,7 @@ def print_solution(data, manager, routing, solution, route_date):
             else:
                 station_list.append(
                     {
-                        "station_id": point,
+                        "station_id": str(df["id"][point - 1]),
                         "station_name": df["name"][point - 1],
                         "station_lat": df["lat"][point - 1],
                         "station_lon": df["lon"][point - 1],
