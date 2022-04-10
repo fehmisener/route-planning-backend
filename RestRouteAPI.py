@@ -17,11 +17,11 @@ def vote_station():
     route_date = request.json["route_date"]
 
     cur.execute(
-        "insert into daily_vote values (null, ?, ?, ?)",
+        "insert into daily_vote values (?, ?, ?)",
         (user_id, user_station_id, route_date),
     )
     con.commit()
-    return {"msg": "Succesfully saved."}, 200
+    return {"msg": "Succesfully saved.","status_code": 201}, 201
 
 
 @route_api.route("/route/daily-vote/", methods=["GET"])
