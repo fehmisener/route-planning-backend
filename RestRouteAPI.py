@@ -16,12 +16,18 @@ def vote_station():
     user_station_id = request.json["user_station_id"]
     route_date = request.json["route_date"]
 
-    cur.execute(
-        "insert into daily_vote values (?, ?, ?)",
-        (user_id, user_station_id, route_date),
-    )
-    con.commit()
-    return {"msg": "Succesfully saved.", "status_code": 201}, 201
+    try:
+        cur.execute(
+            "insert into daily_vote values (?, ?, ?)",
+            (user_id, user_station_id, route_date),
+        )
+        con.commit()
+        return {"msg": "Succesfully saved.", "status_code": 201}, 201
+    except:
+        return {
+            "msg": "Can not reserve twice for selected date",
+            "status_code": 400,
+        }, 400
 
 
 @route_api.route("/route/daily-vote/", methods=["GET"])
