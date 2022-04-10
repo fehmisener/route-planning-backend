@@ -82,7 +82,7 @@ def get_route_for_user():
                     user_id=:user_id AND route_date=:route_date
                 )
             )
-        AND route.station_id = stations.id
+        AND route.station_id = stations.id AND route.route_date=:route_date
         """,
         {"user_id": user_id, "route_date": route_date},
     )
