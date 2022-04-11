@@ -103,7 +103,7 @@ def create_data_model(route_date):
     data = {}
     data["distance_matrix"] = distance_matrix
     data["demands"] = [0] + df["passenger_count"].to_list()
-    data["vehicle_capacities"] = [20, 30, 50]
+    data["vehicle_capacities"] = [5, 10, 15]
     data["num_vehicles"] = 3
     data["depot"] = 0
     return data
