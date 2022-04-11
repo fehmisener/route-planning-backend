@@ -38,20 +38,24 @@ def get_routes_for_limited_car():
 def save_routes_for_limited_car():
 
     route_date = request.json["route_date"]
-
     route_list = main(route_date)
 
-    for i in route_list:
-        counter = 0
-        for j in route_list[i]:
-            cur.execute(
-                "insert into route values (?, ?,?, ?)",
-                (i.split("_")[1], j["station_id"], counter, route_date),
-            )
-            con.commit()
-            counter = counter + 1
-
-    return route_list, 200
+    try:
+        for i in route_list:
+            counter = 0
+            for j in route_list[i]:
+                cur.execute(
+                    "insert into route values (?, ?,?, ?)",
+                    (i.split("_")[1], j["station_id"], counter, route_date),
+                )
+                con.commit()
+                counter = counter + 1
+        return route_list, 200
+    except:
+        return {
+            "msg": 'You cannot calculate routes twice in one day. You can press the "Show Routes" button to see the route you calculated before.',
+            "status_code": 400,
+        }, 400
 
 
 @algorithm_api.route("/algorithm/limited-car/route", methods=["POST"])
