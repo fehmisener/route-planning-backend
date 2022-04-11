@@ -1,6 +1,6 @@
 import sqlite3
-import pandas as pd
 
+import pandas as pd
 from flask import Blueprint, request
 
 from CertainCarAlgorithm import main
@@ -18,18 +18,22 @@ def get_routes_for_limited_car():
     route_date = request.json["route_date"]
 
     df = pd.read_sql_query(
-    """
+        """
     SELECT car_id,station_id,station_order,name,lat,lon,route_date
     FROM route as routes, station as stations
     WHERE routes.station_id = stations.id
     AND route_date == "{}"
-    """.format(route_date), con=con)
+    """.format(
+            route_date
+        ),
+        con=con,
+    )
 
     df_unique_id = df["car_id"].unique()
     routes_list = []
     for i in df_unique_id:
         temp_df = df.query("car_id == @i")
-        routes_list.append(temp_df.to_dict(orient='records'))
+        routes_list.append(temp_df.to_dict(orient="records"))
 
     if len(routes_list) == 0:
         return {"msg": "No routes in table.", "status_code": 403}, 403
@@ -100,3 +104,13 @@ def get_route_for_user():
     if len(query_result) == 0:
         return {"msg": "No route for this user in table.", "status_code": 403}, 403
     return {"service_route": query_result, "user_id": user_id}, 200
+
+
+@algorithm_api.route("/algorithm/clear", methods=["DELETE"])
+def clear_table():
+
+    cur.execute("DELETE FROM route")
+    cur.execute("DELETE FROM SQLITE_SEQUENCE WHERE name='route'")
+    con.commit()
+
+    return {"Table cleared." "status_code": 200}, 200
