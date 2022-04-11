@@ -22,8 +22,8 @@ def get_routes_for_limited_car():
     SELECT car_id,station_id,station_order,name,lat,lon,route_date
     FROM route as routes, station as stations
     WHERE routes.station_id = stations.id
-    AND route_date = (route_date)
-    """,params={"route_date": route_date}, con=con)
+    AND route_date == "{}"
+    """.format(route_date), con=con)
 
     df_unique_id = df["car_id"].unique()
     routes_list = []
