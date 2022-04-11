@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 
 from flask import Blueprint, request
 
@@ -16,21 +17,24 @@ def get_routes_for_limited_car():
 
     route_date = request.json["route_date"]
 
-    cur.execute(
-        """
-        SELECT car_id,station_id,station_order,name,lat,lon,route_date
-        FROM route as routes, station as stations
-        WHERE routes.station_id = stations.id
-        AND route_date=:route_date
-        """,
-        {"route_date": route_date},
-    )
-    query_result = [dict(row) for row in cur.fetchall()]
+    df = pd.read_sql_query(
+    """
+    SELECT car_id,station_id,station_order,name,lat,lon,route_date
+    FROM route as routes, station as stations
+    WHERE routes.station_id = stations.id
+    AND route_date = (route_date)
+    """,params={"route_date": route_date}, con=con)
 
-    if len(query_result) == 0:
+    df_unique_id = df["car_id"].unique()
+    routes_list = []
+    for i in df_unique_id:
+        temp_df = df.query("car_id == @i")
+        routes_list.append(temp_df.to_dict(orient='records'))
+
+    if len(routes_list) == 0:
         return {"msg": "No routes in table.", "status_code": 403}, 403
     return {
-        "route_list": query_result,
+        "route_list": routes_list,
     }, 200
 
 
