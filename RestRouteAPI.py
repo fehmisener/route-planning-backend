@@ -30,7 +30,7 @@ def vote_station():
         }, 400
 
 
-@route_api.route("/route/daily-vote/", methods=["GET"])
+@route_api.route("/route/daily-vote/", methods=["POST"])
 def get_daily_vote_list():
 
     route_date = request.json["route_date"]
