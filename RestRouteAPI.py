@@ -33,12 +33,8 @@ def vote_station():
 @route_api.route("/route/multiple-station-chose", methods=["POST"])
 def multiple_vote():
 
-    print("sasas")
-
     station_stats = request.json["station_stats"]
     route_date = request.json["route_date"]
-
-    print(station_stats)
 
     try:
         for key, value in station_stats.items():
