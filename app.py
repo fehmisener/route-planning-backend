@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
 
-from RestAccountAPI import account_api
-from RestAlgorithmAPI import algorithm_api
-from RestRouteAPI import route_api
-from RestStationAPI import station_api
+from api.RestAccountAPI import account_api
+from api.RestAlgorithmAPI import algorithm_api
+from api.RestRouteAPI import route_api
+from api.RestStationAPI import station_api
 
 app = Flask(__name__)
 app.register_blueprint(account_api)
