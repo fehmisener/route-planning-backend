@@ -34,17 +34,17 @@ def vote_station():
 @route_api.route("/route/multiple-station-chose", methods=["POST"])
 def multiple_vote():
 
-    station_stats = request.json["station_stats"]
+    station_id = request.json["station_id"]
+    passenger_count = request.json["passenger_count"]
     route_date = request.json["route_date"]
 
     try:
-        for key, value in station_stats.items():
-            for i in range(int(value)):
-                cur.execute(
-                    "insert into daily_vote values (?, ?, ?)",
-                    ("3" + str(random.randint(1000, 9999999)) + "3", key, route_date),
-                )
-                con.commit()
+        for i in range(int(passenger_count)):
+            cur.execute(
+                "insert into daily_vote values (?, ?, ?)",
+                ("3" + str(random.randint(1000, 9999999)) + "3", station_id, route_date),
+            )
+            con.commit()
         return {"msg": "Succesfully saved.", "status_code": 201}, 201
     except Exception as e:
         return {
