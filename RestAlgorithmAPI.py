@@ -82,16 +82,6 @@ def get_route_for_user():
     return {"service_route": query_result, "user_id": user_id}, 200
 
 
-@algorithm_api.route("/algorithm/clear", methods=["DELETE"])
-def clear_table():
-
-    cur.execute("DELETE FROM route")
-    cur.execute("DELETE FROM SQLITE_SEQUENCE WHERE name='route'")
-    con.commit()
-
-    return {"msg": "Table cleared.", "status_code": 200}, 200
-
-
 @algorithm_api.route("/algorithm/limited-car/route-save", methods=["POST"])
 def save_routes_for_limited_car():
 
