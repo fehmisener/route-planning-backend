@@ -30,6 +30,7 @@ def vote_station():
             "status_code": 400,
         }, 400
 
+
 @route_api.route("/route/multiple-station-chose", methods=["POST"])
 def multiple_vote():
 
@@ -51,6 +52,7 @@ def multiple_vote():
             "status_code": 400,
         }, 400
 
+
 @route_api.route("/route/daily-vote/", methods=["POST"])
 def get_daily_vote_list():
 
@@ -62,7 +64,7 @@ def get_daily_vote_list():
         FROM daily_vote as votes, station as stations
         WHERE votes.user_station_id == stations.id AND votes.route_date=:route_date
         GROUP BY votes.user_station_id
-        ORDER BY stations.id DESC
+        ORDER BY stations.id ASC
         """,
         {"route_date": route_date},
     )
@@ -75,20 +77,29 @@ def get_daily_vote_list():
         "route_date": route_date,
     }, 200
 
+
 @route_api.route("/route/clear-daily-vote", methods=["DELETE"])
 def clear_daily_vote_table():
 
-    cur.execute("DELETE FROM daily_vote")
-    cur.execute("DELETE FROM SQLITE_SEQUENCE WHERE name='daily_vote'")
+    route_date = request.json["route_date"]
+
+
+    cur.execute(
+        "DELETE FROM daily_vote where route_date=:route_date", {"route_date": route_date}
+    )
     con.commit()
 
     return {"msg": "Table cleared.", "status_code": 200}, 200
 
+
 @route_api.route("/route/clear", methods=["DELETE"])
 def clear_route_table():
 
-    cur.execute("DELETE FROM route")
-    cur.execute("DELETE FROM SQLITE_SEQUENCE WHERE name='route'")
+    route_date = request.json["route_date"]
+
+    cur.execute(
+        "DELETE FROM route where route_date=:route_date", {"route_date": route_date}
+    )
     con.commit()
 
     return {"msg": "Table cleared.", "status_code": 200}, 200
