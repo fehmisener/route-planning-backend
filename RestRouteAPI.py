@@ -92,7 +92,7 @@ def clear_daily_vote_table():
     return {"msg": "Table cleared.", "status_code": 200}, 200
 
 
-@route_api.route("/route/clear", methods=["DELETE"])
+@route_api.route("/route/clear-route", methods=["DELETE"])
 def clear_route_table():
 
     route_date = request.json["route_date"]
