@@ -41,6 +41,7 @@ def get_routes_for_limited_car():
         "route_list": routes_list,
     }, 200
 
+
 @algorithm_api.route("/algorithm/limited-car/route", methods=["POST"])
 def get_route_for_user():
 
@@ -80,6 +81,7 @@ def get_route_for_user():
         return {"msg": "No route for this user in table.", "status_code": 403}, 403
     return {"service_route": query_result, "user_id": user_id}, 200
 
+
 @algorithm_api.route("/algorithm/clear", methods=["DELETE"])
 def clear_table():
 
@@ -87,7 +89,8 @@ def clear_table():
     cur.execute("DELETE FROM SQLITE_SEQUENCE WHERE name='route'")
     con.commit()
 
-    return {"msg":"Table cleared.", "status_code": 200}, 200
+    return {"msg": "Table cleared.", "status_code": 200}, 200
+
 
 @algorithm_api.route("/algorithm/limited-car/route-save", methods=["POST"])
 def save_routes_for_limited_car():
@@ -112,4 +115,5 @@ def save_routes_for_limited_car():
             "status_code": 400,
         }, 400
 
-#TODO RETURN SPESIFIC ROUTE
+
+# TODO RETURN SPESIFIC ROUTE
