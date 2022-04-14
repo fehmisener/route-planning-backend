@@ -98,7 +98,10 @@ def save_routes_for_limited_car():
                 )
                 con.commit()
                 counter = counter + 1
-        return route_list, 200
+        return {
+            "msg": 'Routes succesfully calculated. You can show them using "Show Routes" button.',
+            "status_code": 200,
+        }, 200
     except:
         return {
             "msg": 'You cannot calculate routes twice in one day. You can press the "Show Routes" button to see the route you calculated before.',

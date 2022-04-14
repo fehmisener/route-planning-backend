@@ -42,7 +42,11 @@ def multiple_vote():
         for i in range(int(passenger_count)):
             cur.execute(
                 "insert into daily_vote values (?, ?, ?)",
-                ("3" + str(random.randint(1000, 9999999)) + "3", station_id, route_date),
+                (
+                    "3" + str(random.randint(1000, 9999999)) + "3",
+                    station_id,
+                    route_date,
+                ),
             )
             con.commit()
         return {"msg": "Succesfully saved.", "status_code": 201}, 201
@@ -83,9 +87,9 @@ def clear_daily_vote_table():
 
     route_date = request.json["route_date"]
 
-
     cur.execute(
-        "DELETE FROM daily_vote where route_date=:route_date", {"route_date": route_date}
+        "DELETE FROM daily_vote where route_date=:route_date",
+        {"route_date": route_date},
     )
     con.commit()
 
