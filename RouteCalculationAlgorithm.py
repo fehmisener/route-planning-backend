@@ -43,7 +43,7 @@ def dist(x, y):
 
     a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
-    distance = R * c * 1000
+    distance = R * c
 
     return int(distance)
 
