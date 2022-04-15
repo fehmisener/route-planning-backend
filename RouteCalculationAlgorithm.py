@@ -8,12 +8,13 @@ con = sqlite3.connect("database.db", check_same_thread=False)
 
 
 class Route(object):
-    def __init__(self, capacity):
+    def __init__(self, capacity,id):
 
         self.items = []
         self.load = 0
         self.capacity = capacity
         self.total_distance = 0
+        self.car_id = id
 
     def append(self, item, load, distance):
 
@@ -74,7 +75,7 @@ def read_car_capacity():
 
     df = pd.read_sql_query(
         """ 
-        SELECT car_capacity 
+        SELECT car_id, car_capacity 
         FROM car 
         ORDER BY car_capacity DESC
         """,
@@ -84,7 +85,7 @@ def read_car_capacity():
     if len(df) == 0:
         raise Exception("No car in table")
 
-    return df["car_capacity"].to_list()
+    return df.to_dict('list')
 
 
 def sum_numbers(numbers):
@@ -186,7 +187,8 @@ def main(route_date):
     data = {}
     data["distance_matrix"] = distance_matrix
     data["demands"] = [0] + df["passenger_count"].to_list()
-    data["vehicle_capacities"] = read_car_capacity()
+    data["vehicle_capacities"] = read_car_capacity()["car_capacity"]
+    data["vehicle_id"] = read_car_capacity()["car_id"]
 
     route_list = []
     unique_list = []
@@ -233,7 +235,7 @@ def main(route_date):
                 counter
             ]:
 
-                new_route = Route(capacity=data["vehicle_capacities"][counter])
+                new_route = Route(capacity=data["vehicle_capacities"][counter], id = data["vehicle_id"][counter])
 
                 new_route.append(station_1_id, station_1_demand, row["distance"])
                 new_route.append(station_2_id, station_2_demand, 0)
@@ -251,7 +253,7 @@ def main(route_date):
     if any(cant_add):
 
         capacity_count = 0
-        new_route = Route(0)
+        new_route = Route(0,-1)
         temp_i = 0
         start_flag = True
 
@@ -275,8 +277,6 @@ def main(route_date):
     print_routes(route_list)
 
     routes_dict = {}
-    counter = len(route_list)
-
     for i in route_list:
 
         station_list = []
@@ -290,20 +290,17 @@ def main(route_date):
                     "station_lon": df["lon"][point - 1],
                 }
             )
-        routes_dict["car_{}".format(counter)] = station_list
-        counter -= 1
+        routes_dict["car_{}".format(i.car_id)] = station_list
 
     car_list = []
-    counter = len(route_list)
     for i in route_list:
         
         car_list.append({
-            "car_id": counter,
+            "car_id": i.car_id,
             "car_load": i.load ,
             "car_capacity": i.capacity,
             "car_total_distance": i.total_distance
         })
-        counter -= 1
 
     return routes_dict, car_list
 
