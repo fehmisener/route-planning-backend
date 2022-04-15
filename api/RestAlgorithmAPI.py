@@ -123,5 +123,23 @@ def save_routes_for_limited_car():
             "status_code": 400,
         }, 400
 
+@algorithm_api.route("/algorithm/car-stats", methods=["GET"])
+def get_car_stats():
 
-# TODO RETURN SPESIFIC ROUTE
+    route_date = request.json["route_date"]
+    
+    cur.execute(
+        "select * from car_stat where route_date=:route_date",
+        {"route_date": route_date},
+    )
+    query_result = [dict(row) for row in cur.fetchall()]
+
+    if len(query_result) == 0:
+        return {
+            "msg": "Car Stats not found or not calculated yet.",
+            "status_code": 401,
+        }, 401
+    return {
+        "car_stats:": query_result,
+        "status_code": 200,
+    }, 200
