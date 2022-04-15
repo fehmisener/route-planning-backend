@@ -123,11 +123,12 @@ def save_routes_for_limited_car():
             "status_code": 400,
         }, 400
 
+
 @algorithm_api.route("/algorithm/car-stats", methods=["GET"])
 def get_car_stats():
 
     route_date = request.json["route_date"]
-    
+
     cur.execute(
         "select * from car_stat where route_date=:route_date",
         {"route_date": route_date},

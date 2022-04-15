@@ -250,13 +250,13 @@ def main(route_date):
             else:
                 counter -= 1
                 pass
-            
+
     customer_list = [i for i in range(1, len(data["distance_matrix"]))]
     cant_add = diff_list(customer_list, unique_list)
 
     if any(cant_add):
         counter += 1
-        if ( len(cant_add) == 1 and counter < len(data["vehicle_capacities"]) ):
+        if len(cant_add) == 1 and counter < len(data["vehicle_capacities"]):
 
             distance = data["distance_matrix"]["1"][str(cant_add[0] + 1)]
             new_route = Route(
