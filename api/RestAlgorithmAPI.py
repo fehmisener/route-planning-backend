@@ -92,13 +92,30 @@ def save_routes_for_limited_car():
         for i in route_list:
 
             counter = 0
+            print(len(route_list[i]))
             for j in route_list[i]:
+                if(counter == 0):
+                    cur.execute(
+                    "insert into route values (?, ?, ?, ?)",
+                    (i.split("_")[1], "0", counter, route_date),
+                )
+                    con.commit()
+                    counter = counter + 1
+
                 cur.execute(
                     "insert into route values (?, ?, ?, ?)",
                     (i.split("_")[1], j["station_id"], counter, route_date),
                 )
                 con.commit()
                 counter = counter + 1
+
+                if(counter == len(route_list[i])+1):
+                    cur.execute(
+                    "insert into route values (?, ?, ?, ?)",
+                    (i.split("_")[1], "0", counter, route_date),
+                )
+                    con.commit()
+                    counter = counter + 1
 
         for car in car_list:
             cur.execute(
