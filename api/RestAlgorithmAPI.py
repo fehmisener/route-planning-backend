@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 from flask import Blueprint, request
 
-from CertainCarAlgorithm import main
+from RouteCalculationAlgorithm import main
 
 con = sqlite3.connect("database.db", check_same_thread=False)
 con.row_factory = sqlite3.Row
@@ -86,10 +86,11 @@ def get_route_for_user():
 def save_routes_for_limited_car():
 
     route_date = request.json["route_date"]
-    route_list = main(route_date)
+    route_list, car_list = main(route_date)
 
     try:
         for i in route_list:
+
             counter = 0
             for j in route_list[i]:
                 cur.execute(
@@ -98,6 +99,20 @@ def save_routes_for_limited_car():
                 )
                 con.commit()
                 counter = counter + 1
+
+        for car in car_list:
+            cur.execute(
+                "insert into car_stat values (?, ?, ?, ?, ?)",
+                (
+                    car["car_id"],
+                    car["car_load"],
+                    car["car_capacity"],
+                    car["car_total_distance"],
+                    route_date,
+                ),
+            )
+            con.commit()
+
         return {
             "msg": 'Routes succesfully calculated. You can show them using "Show Routes" button.',
             "status_code": 200,
