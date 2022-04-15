@@ -13,19 +13,21 @@ class Route(object):
         self.items = []
         self.load = 0
         self.capacity = capacity
+        self.total_distance = 0
 
-    def append(self, item, load):
+    def append(self, item, load, distance):
 
         self.items.append(item)
         self.load += load
+        self.total_distance += distance
 
     def change_capacity(self, capacity):
         self.capacity = capacity
 
     def __str__(self):
 
-        return "Route List: {} | Route Load: {} | Car Capacity: {}".format(
-            self.items, self.load, self.capacity
+        return "Route List: {} | Route Load: {} | Route Total Distance: {} | Car Capacity: {}".format(
+            self.items, self.load, self.total_distance, self.capacity
         )
 
 
@@ -134,6 +136,7 @@ def calculate_savings(demands, distance_matrix):
                 "station_1_demand": demands[k],
                 "station_2_demand": demands[j + 1],
                 "savings": sum,
+                "distance": distance_matrix[str(k + 1)][str(j + 2)],
             }
             df_list.append(var)
         k += 1
@@ -218,7 +221,7 @@ def main(route_date):
                 and route_id != -1
             ):
 
-                route_list[route_id].append(station_id, station_demand)
+                route_list[route_id].append(station_id, station_demand, row["distance"])
                 unique_list.append(station_id)
         else:
 
@@ -232,8 +235,8 @@ def main(route_date):
 
                 new_route = Route(capacity=data["vehicle_capacities"][counter])
 
-                new_route.append(station_1_id, station_1_demand)
-                new_route.append(station_2_id, station_2_demand)
+                new_route.append(station_1_id, station_1_demand, row["distance"])
+                new_route.append(station_2_id, station_2_demand, 0)
 
                 route_list.append(new_route)
                 unique_list.append(station_1_id)
@@ -249,20 +252,30 @@ def main(route_date):
 
         capacity_count = 0
         new_route = Route(0)
+        temp_i = 0
+        start_flag = True
 
         for i in cant_add:
             capacity_count += data["demands"][i]
-            new_route.append(i, data["demands"][i])
+
+            if (start_flag == True):
+
+                new_route.append(i, data["demands"][i], 0)
+                temp_i = i
+                start_flag = False
+            else:
+                distance = data["distance_matrix"][str(temp_i+1)][str(i+1)]
+                new_route.append(i, data["demands"][i], distance)
 
         new_route.change_capacity(capacity_count)
         route_list.append(new_route)
+    
+    print_with_names(df, route_list)
+    print("--------------------")
+    print_routes(route_list)
 
     routes_dict = {}
-    counter = 1
-
-    # print_with_names(df, route_list)
-    # print("--------------------")
-    # print_routes(route_list)
+    counter = len(route_list)
 
     for i in route_list:
 
@@ -278,9 +291,21 @@ def main(route_date):
                 }
             )
         routes_dict["car_{}".format(counter)] = station_list
-        counter = counter + 1
+        counter -= 1
 
-    return routes_dict
+    car_list = []
+    counter = len(route_list)
+    for i in route_list:
+        
+        car_list.append({
+            "car_id": counter,
+            "car_load": i.load ,
+            "car_capacity": i.capacity,
+            "car_total_distance": i.total_distance
+        })
+        counter -= 1
+
+    return routes_dict, car_list
 
 
 if __name__ == "__main__":
