@@ -143,3 +143,16 @@ def get_car_stats():
         "car_stats:": query_result,
         "status_code": 200,
     }, 200
+
+
+@algorithm_api.route("/algorithm/clear-car-stats", methods=["DELETE"])
+def clear_car_stats_table():
+
+    route_date = request.json["route_date"]
+
+    cur.execute(
+        "DELETE FROM car_stat where route_date=:route_date", {"route_date": route_date}
+    )
+    con.commit()
+
+    return {"msg": "Table cleared.", "status_code": 200}, 200
