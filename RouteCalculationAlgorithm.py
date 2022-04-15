@@ -8,7 +8,7 @@ con = sqlite3.connect("database.db", check_same_thread=False)
 
 
 class Route(object):
-    def __init__(self, capacity,id):
+    def __init__(self, capacity, id):
 
         self.items = []
         self.load = 0
@@ -85,7 +85,7 @@ def read_car_capacity():
     if len(df) == 0:
         raise Exception("No car in table")
 
-    return df.to_dict('list')
+    return df.to_dict("list")
 
 
 def sum_numbers(numbers):
@@ -235,7 +235,10 @@ def main(route_date):
                 counter
             ]:
 
-                new_route = Route(capacity=data["vehicle_capacities"][counter], id = data["vehicle_id"][counter])
+                new_route = Route(
+                    capacity=data["vehicle_capacities"][counter],
+                    id=data["vehicle_id"][counter],
+                )
 
                 new_route.append(station_1_id, station_1_demand, row["distance"])
                 new_route.append(station_2_id, station_2_demand, 0)
@@ -245,33 +248,45 @@ def main(route_date):
                 unique_list.append(station_2_id)
 
             else:
+                counter -= 1
                 pass
-
+            
     customer_list = [i for i in range(1, len(data["distance_matrix"]))]
     cant_add = diff_list(customer_list, unique_list)
 
     if any(cant_add):
+        counter += 1
+        if ( len(cant_add) == 1 and counter < len(data["vehicle_capacities"]) ):
 
-        capacity_count = 0
-        new_route = Route(0,-1)
-        temp_i = 0
-        start_flag = True
+            distance = data["distance_matrix"]["1"][str(cant_add[0] + 1)]
+            new_route = Route(
+                capacity=data["vehicle_capacities"][counter],
+                id=data["vehicle_id"][counter],
+            )
+            new_route.append(cant_add[0], data["demands"][cant_add[0]], distance)
+            route_list.append(new_route)
 
-        for i in cant_add:
-            capacity_count += data["demands"][i]
+        else:
+            capacity_count = 0
+            new_route = Route(0, -1)
+            temp_i = 0
+            start_flag = True
 
-            if (start_flag == True):
+            for i in cant_add:
+                capacity_count += data["demands"][i]
 
-                new_route.append(i, data["demands"][i], 0)
-                temp_i = i
-                start_flag = False
-            else:
-                distance = data["distance_matrix"][str(temp_i+1)][str(i+1)]
-                new_route.append(i, data["demands"][i], distance)
+                if start_flag == True:
 
-        new_route.change_capacity(capacity_count)
-        route_list.append(new_route)
-    
+                    new_route.append(i, data["demands"][i], 0)
+                    temp_i = i
+                    start_flag = False
+                else:
+                    distance = data["distance_matrix"][str(temp_i + 1)][str(i + 1)]
+                    new_route.append(i, data["demands"][i], distance)
+
+            new_route.change_capacity(capacity_count)
+            route_list.append(new_route)
+
     print_with_names(df, route_list)
     print("--------------------")
     print_routes(route_list)
@@ -294,13 +309,15 @@ def main(route_date):
 
     car_list = []
     for i in route_list:
-        
-        car_list.append({
-            "car_id": i.car_id,
-            "car_load": i.load ,
-            "car_capacity": i.capacity,
-            "car_total_distance": i.total_distance
-        })
+
+        car_list.append(
+            {
+                "car_id": i.car_id,
+                "car_load": i.load,
+                "car_capacity": i.capacity,
+                "car_total_distance": i.total_distance,
+            }
+        )
 
     return routes_dict, car_list
 
