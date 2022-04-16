@@ -256,7 +256,7 @@ def main(route_date):
 
     if any(cant_add):
         counter += 1
-        if len(cant_add) == 1 and counter < len(data["vehicle_capacities"]):
+        if len(cant_add) == 1 and counter < len(data["vehicle_capacities"]) and data["demands"][cant_add[0]] <= data["vehicle_capacities"][counter]:
 
             distance = data["distance_matrix"]["1"][str(cant_add[0] + 1)]
             new_route = Route(

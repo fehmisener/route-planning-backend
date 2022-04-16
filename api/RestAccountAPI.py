@@ -41,13 +41,15 @@ def register_user():
     user_pass = request.json["password"]
     user_type = request.json["user_type"]
 
-    cur.execute(
-        "insert into user values (null, ?, ?, ?)",
-        (user_id, user_pass, user_type),
-    )
-    con.commit()
-    return {"msg": "Succesfully account created.", "status_code": 201}, 201
-
+    try:
+        cur.execute(
+            "insert into user values (null, ?, ?, ?)",
+            (user_id, user_pass, user_type),
+        )
+        con.commit()
+        return {"msg": "Succesfully account created.", "status_code": 201}, 201
+    except:
+        return {"msg": "User exist you can not create with same username.", "status_code": 401}, 401
 
 @account_api.route("/account/list", methods=["GET"])
 def list_user():
