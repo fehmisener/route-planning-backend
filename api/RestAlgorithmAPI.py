@@ -158,7 +158,7 @@ def get_car_stats():
             "status_code": 401,
         }, 401
     return {
-        "car_stats:": query_result,
+        "car_stats": query_result,
         "status_code": 200,
     }, 200
 
