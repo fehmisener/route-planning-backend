@@ -141,7 +141,7 @@ def save_routes_for_limited_car():
         }, 400
 
 
-@algorithm_api.route("/algorithm/car-stats", methods=["GET"])
+@algorithm_api.route("/algorithm/car-stats", methods=["POST"])
 def get_car_stats():
 
     route_date = request.json["route_date"]
